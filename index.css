@@ -1,3 +1,7 @@
+body {
+  background-color: red;
+}
+
 /* Estilos base */
 :root {
   --primary-color: #4a6fa5;
