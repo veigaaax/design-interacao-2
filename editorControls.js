@@ -488,11 +488,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const apiRequests = [
                 fetch('https://jsonplaceholder.typicode.com/posts/1').then(res => res.json()),
                 fetch('https://swapi.dev/api/people/1/').then(res => res.json()),
-                fetch('https://api.coindesk.com/v1/bpi/currentprice.json').then(res => res.json()) // Exemplo de outra API pública
+                fetch('https://www.boredapi.com/api/activity').then(res => res.json()) // <-- API CoinDesk substituída aqui
             ];
 
             try {
-                const [postData, swapiData, coinDeskData] = await Promise.all(apiRequests);
+                // Certifique-se de que as variáveis correspondem à nova API
+                const [postData, swapiData, boredData] = await Promise.all(apiRequests);
 
                 dataApisContainer.innerHTML = `
                     <h3>Dados de Múltiplas APIs</h3>
@@ -508,10 +509,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p><strong>Gênero:</strong> ${swapiData.gender}</p>
                     </div>
                     <div class="api-data-card">
-                        <h4>Dados do CoinDesk (Preço do Bitcoin)</h4>
-                        <p><strong>Moeda:</strong> Bitcoin</p>
-                        <p><strong>Preço (USD):</strong> ${coinDeskData.bpi.USD.rate}</p>
-                        <p><strong>Atualizado:</strong> ${coinDeskData.time.updated}</p>
+                        <h4>Dados do BoredAPI</h4>
+                        <p><strong>Atividade:</strong> ${boredData.activity}</p>
+                        <p><strong>Tipo:</strong> ${boredData.type}</p>
+                        <p><strong>Participantes:</strong> ${boredData.participants}</p>
+                        <p><strong>Link:</strong> <a href="${boredData.link}" target="_blank">${boredData.link || 'N/A'}</a></p>
                     </div>
                 `;
                 allApisResultStatus.textContent = 'Dados das APIs carregados com sucesso!';
@@ -520,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Erro ao buscar dados de múltiplas APIs:', error);
                 dataApisContainer.innerHTML = `
                     <h3>Erro ao carregar dados das APIs</h3>
-                    <p>Não foi possível obter os dados de uma ou mais APIs. Tente novamente mais tarde.</p>
+                    <p>Não foi possível obter os dados. Um ou mais serviços de API podem estar indisponíveis ou bloqueados por CORS. Tente novamente mais tarde.</p>
                     <p>Detalhes do erro: ${error.message}</p>
                 `;
                 allApisResultStatus.textContent = 'Erro ao carregar dados das APIs.';
