@@ -391,8 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('card-text-color').addEventListener('input', renderGallery);
     document.getElementById('card-text-font-size').addEventListener('input', renderGallery);
 
-    document.getElementById('form-title').addEventListener('input', renderForm); // Já tem no main.js, mas mantido aqui para clareza
-    document.getElementById('form-description').addEventListener('input', renderForm); // Já tem no main.js, mas mantido aqui para clareza
+    document.getElementById('form-title').addEventListener('input', renderForm);
+    document.getElementById('form-description').addEventListener('input', renderForm);
     document.getElementById('form-bg-color').addEventListener('input', renderForm);
     document.getElementById('form-text-color').addEventListener('input', renderForm);
     document.getElementById('form-border-color').addEventListener('input', renderForm);
@@ -407,129 +407,105 @@ document.addEventListener('DOMContentLoaded', () => {
     renderForm();
     renderFooter();
 
-    /////////////////////////////////////
-    // API Interativa (FIPE)
-    /////////////////////////////////////
-    const fetchFipeDataBtn = document.getElementById('fetch-fipe-data-btn');
-    const fipeBrandCodeInput = document.getElementById('fipe-brand-code');
-    const fipeModelCodeInput = document.getElementById('fipe-model-code');
-    const fipeYearCodeInput = document.getElementById('fipe-year-code');
-    const fipeResultStatus = document.getElementById('fipe-result-status');
-    const interactiveApiContainer = document.getElementById('interactive-api-container');
+    function showError(message) {
+        // Assume allApisResultStatus as the default status display element
+        const statusElement = document.getElementById('all-apis-result-status');
+        if (statusElement) {
+            statusElement.textContent = message;
+            statusElement.className = 'status-message error show';
+            setTimeout(() => statusElement.className = 'status-message', 3000);
+        }
+    }
 
-    if (fetchFipeDataBtn) {
-        fetchFipeDataBtn.addEventListener('click', async () => {
-            const brandCode = fipeBrandCodeInput.value;
-            const modelCode = fipeModelCodeInput.value;
-            const yearCode = fipeYearCodeInput.value;
-
-            if (!brandCode || !modelCode || !yearCode) {
-                fipeResultStatus.textContent = 'Por favor, preencha todos os campos da FIPE.';
-                fipeResultStatus.className = 'status-message error show';
-                setTimeout(() => fipeResultStatus.className = 'status-message', 3000);
-                return;
-            }
-
-            fipeResultStatus.textContent = 'Consultando FIPE...';
-            fipeResultStatus.className = 'status-message success show'; // Use success for loading
-
-            try {
-                // Exemplo de API FIPE (usando BrasilAPI para simplificar)
-                const apiUrl = `https://brasilapi.com.br/api/fipe/v1/carros/marcas/${brandCode}/modelos/${modelCode}/anos/${yearCode}`;
-                const response = await fetch(apiUrl);
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Erro ao consultar FIPE: ${response.status} ${response.statusText} - ${errorText}`);
-                }
-
-                const data = await response.json();
-
-                interactiveApiContainer.innerHTML = `
-                    <h3>Dados da Tabela FIPE</h3>
-                    <div class="api-data-card">
-                        <p><strong>Marca:</strong> ${data.marca}</p>
-                        <p><strong>Modelo:</strong> ${data.modelo}</p>
-                        <p><strong>Ano Modelo:</strong> ${data.anoModelo}</p>
-                        <p><strong>Combustível:</strong> ${data.combustivel}</p>
-                        <p><strong>Valor:</strong> ${data.valor}</p>
-                        <p><strong>Mês de Referência:</strong> ${data.mesReferencia}</p>
-                    </div>
-                `;
-                fipeResultStatus.textContent = 'Dados da FIPE carregados com sucesso!';
-                fipeResultStatus.className = 'status-message success show';
-            } catch (error) {
-                console.error('Erro ao buscar dados da FIPE:', error);
-                interactiveApiContainer.innerHTML = `
-                    <h3>Erro ao carregar dados da FIPE</h3>
-                    <p>Não foi possível obter os dados. Verifique os códigos informados ou tente novamente mais tarde.</p>
-                    <p>Detalhes do erro: ${error.message}</p>
-                `;
-                fipeResultStatus.textContent = 'Erro ao carregar dados da FIPE.';
-                fipeResultStatus.className = 'status-message error show';
-            } finally {
-                setTimeout(() => fipeResultStatus.className = 'status-message', 3000);
-            }
-        });
+    function showSuccess(message) {
+        // Assume allApisResultStatus as the default status display element
+        const statusElement = document.getElementById('all-apis-result-status');
+        if (statusElement) {
+            statusElement.textContent = message;
+            statusElement.className = 'status-message success show';
+            setTimeout(() => statusElement.className = 'status-message', 3000);
+        }
     }
 
     /////////////////////////////////////
-    // Dados de APIs (Promise.all)
+    // Dados de APIs (Promise.all) - Cotação de Moedas
     /////////////////////////////////////
     const fetchAllApisBtn = document.getElementById('fetch-all-apis-btn');
-    const allApisResultStatus = document.getElementById('all-apis-result-status');
-    const dataApisContainer = document.getElementById('data-apis-container');
-
     if (fetchAllApisBtn) {
         fetchAllApisBtn.addEventListener('click', async () => {
-            allApisResultStatus.textContent = 'Carregando dados de múltiplas APIs...';
-            allApisResultStatus.className = 'status-message success show';
+            const allApisResultStatus = document.getElementById('all-apis-result-status');
+            const dataApisContainer = document.getElementById('data-apis-container');
+            
+            allApisResultStatus.textContent = 'Carregando cotações de moedas...';
+            allApisResultStatus.className = 'status-message show';
 
             const apiRequests = [
-                fetch('https://jsonplaceholder.typicode.com/posts/1').then(res => res.json()),
-                fetch('https://swapi.dev/api/people/1/').then(res => res.json()),
-                fetch('https://www.boredapi.com/api/activity').then(res => res.json()) // <-- API CoinDesk substituída aqui
+                // Dólar (USD)
+                fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL').then(res => {
+                    if (!res.ok) throw new Error('API do Dólar falhou');
+                    return res.json();
+                }),
+                // Euro (EUR)
+                fetch('https://economia.awesomeapi.com.br/json/last/EUR-BRL').then(res => {
+                    if (!res.ok) throw new Error('API do Euro falhou');
+                    return res.json();
+                }),
+                // Rublo (RUB) - Usando uma API diferente, pois a AwesomeAPI pode não ter.
+                // Esta API é apenas um exemplo e pode exigir chave ou ter limites.
+                // Outra alternativa seria buscar em APIs como fixer.io ou openexchangerates.org (que geralmente requerem chave).
+                // Para simplificar, vou usar uma que geralmente não requer chave, mas pode ser menos confiável.
+                // A API a seguir é um exemplo genérico e pode não ser sempre funcional ou ter a moeda RUB.
+                // Se não funcionar, será preciso encontrar uma API que forneça RUB para BRL.
+                fetch('https://api.exchangerate-api.com/v4/latest/BRL').then(res => {
+                    if (!res.ok) throw new Error('API do Rublo falhou');
+                    return res.json();
+                })
             ];
 
             try {
-                // Certifique-se de que as variáveis correspondem à nova API
-                const [postData, swapiData, boredData] = await Promise.all(apiRequests);
+                const [usdData, eurData, rubDataRaw] = await Promise.all(apiRequests);
+
+                const usdQuote = usdData.USDBRL.high;
+                const eurQuote = eurData.EURBRL.high;
+                
+                // Para o Rublo, verificamos se a API retornou o valor para RUB
+                const rubQuote = rubDataRaw.rates.RUB ? (1 / rubDataRaw.rates.BRL) * rubDataRaw.rates.RUB : 'N/A'; // Convertendo BRL para RUB
 
                 dataApisContainer.innerHTML = `
-                    <h3>Dados de Múltiplas APIs</h3>
+                    <h3>Cotações de Moedas em R$ (BRL)</h3>
                     <div class="api-data-card">
-                        <h4>Dados do JSONPlaceholder (Post 1)</h4>
-                        <p><strong>Título:</strong> ${postData.title}</p>
-                        <p><strong>Corpo:</strong> ${postData.body}</p>
+                        <h4>Dólar Americano (USD)</h4>
+                        <p><strong>Compra:</strong> R$ ${parseFloat(usdData.USDBRL.bid).toFixed(4)}</p>
+                        <p><strong>Venda:</strong> R$ ${parseFloat(usdData.USDBRL.ask).toFixed(4)}</p>
+                        <p><strong>Última Atualização:</strong> ${new Date(parseInt(usdData.USDBRL.timestamp) * 1000).toLocaleString()}</p>
                     </div>
                     <div class="api-data-card">
-                        <h4>Dados do SWAPI (Luke Skywalker)</h4>
-                        <p><strong>Nome:</strong> ${swapiData.name}</p>
-                        <p><strong>Altura:</strong> ${swapiData.height} cm</p>
-                        <p><strong>Gênero:</strong> ${swapiData.gender}</p>
+                        <h4>Euro (EUR)</h4>
+                        <p><strong>Compra:</strong> R$ ${parseFloat(eurData.EURBRL.bid).toFixed(4)}</p>
+                        <p><strong>Venda:</strong> R$ ${parseFloat(eurData.EURBRL.ask).toFixed(4)}</p>
+                        <p><strong>Última Atualização:</strong> ${new Date(parseInt(eurData.EURBRL.timestamp) * 1000).toLocaleString()}</p>
                     </div>
                     <div class="api-data-card">
-                        <h4>Dados do BoredAPI</h4>
-                        <p><strong>Atividade:</strong> ${boredData.activity}</p>
-                        <p><strong>Tipo:</strong> ${boredData.type}</p>
-                        <p><strong>Participantes:</strong> ${boredData.participants}</p>
-                        <p><strong>Link:</strong> <a href="${boredData.link}" target="_blank">${boredData.link || 'N/A'}</a></p>
+                        <h4>Rublo Russo (RUB)</h4>
+                        <p><strong>Valor:</strong> R$ ${parseFloat(rubQuote).toFixed(4)}</p>
+                        <p>(Valor estimado, API pode variar ou necessitar de chave)</p>
                     </div>
                 `;
-                allApisResultStatus.textContent = 'Dados das APIs carregados com sucesso!';
+                allApisResultStatus.textContent = 'Cotações carregadas com sucesso!';
                 allApisResultStatus.className = 'status-message success show';
             } catch (error) {
-                console.error('Erro ao buscar dados de múltiplas APIs:', error);
+                console.error('Erro ao buscar cotações de moedas:', error);
                 dataApisContainer.innerHTML = `
-                    <h3>Erro ao carregar dados das APIs</h3>
-                    <p>Não foi possível obter os dados. Um ou mais serviços de API podem estar indisponíveis ou bloqueados por CORS. Tente novamente mais tarde.</p>
+                    <h3>Erro ao carregar cotações de moedas</h3>
+                    <p>Não foi possível obter os dados de uma ou mais APIs de câmbio. Isso pode ser devido a problemas de rede, APIs estarem temporariamente indisponíveis ou limites de requisição.</p>
                     <p>Detalhes do erro: ${error.message}</p>
+                    <p>Verifique as APIs ou tente novamente mais tarde.</p>
                 `;
-                allApisResultStatus.textContent = 'Erro ao carregar dados das APIs.';
+                allApisResultStatus.textContent = 'Erro ao carregar cotações de moedas.';
                 allApisResultStatus.className = 'status-message error show';
             } finally {
                 setTimeout(() => allApisResultStatus.className = 'status-message', 3000);
             }
         });
     }
-});
+})
