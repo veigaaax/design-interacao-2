@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1" >
+  <title>Editor de Site</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.css" rel="stylesheet" >
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="editor-container">
+    <div class="unified-editor-container">
+      <div class="editor-section">
+        <div class="flex justify-between mb-3">
+          <button id="tab-header" class="bg-green-700 hover:bg-green-600 w-1/6">Cabeçalho</button>
+          <button id="tab-menu" class="bg-gray-700 hover:bg-gray-600 w-1/6">Menu</button>
+          <button id="tab-gallery" class="bg-gray-700 hover:bg-gray-600 w-1/6">Galeria</button>
+          <button id="tab-form" class="bg-gray-700 hover:bg-gray-600 w-1/6">Formulário</button>
+          <button id="tab-interactive-api" class="bg-gray-700 hover:bg-gray-600 w-1/6">API Interativa</button>
+          <button id="tab-data-apis" class="bg-gray-700 hover:bg-gray-600 w-1/6">Dados de APIs</button>
+          <button id="tab-footer" class="bg-gray-700 hover:bg-gray-600 w-1/6">Rodapé</button>
+          <button id="tab-export" class="bg-gray-700 hover:bg-gray-600 w-1/6">Exportar</button>
+        </div>
+      </div>
+      
+      <div id="editor-header" class="editor-container" style="display: block;">
+        <div class="editor-section">
+          <h2>Editor de Cabeçalho</h2>
+          <label for="header-bg-color">Cor de Fundo do Cabeçalho:</label>
+          <input type="color" id="header-bg-color" value="#333333">
+          
+          <label for="header-text-color">Cor do Texto do Cabeçalho:</label>
+          <input type="color" id="header-text-color" value="#ffffff">
+          
+          <label for="header-title">Título do Cabeçalho:</label>
+          <input type="text" id="header-title" placeholder="Título do Site" value="Meu Site Incrível">
+          
+          <label for="header-subtitle">Subtítulo do Cabeçalho:</label>
+          <input type="text" id="header-subtitle" placeholder="Subtítulo Aqui" value="Um subtítulo interessante">
+          
+          <label for="header-align">Alinhamento do Texto:</label>
+          <select id="header-align">
+            <option value="left">Esquerda</option>
+            <option value="center" selected>Centro</option>
+            <option value="right">Direita</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="editor-menu" class="editor-container" style="display: none;">
+        <div class="editor-section">
+          <h2>Editor de Menu</h2>
+          <label for="menu-bg-color">Cor de Fundo do Menu:</label>
+          <input type="color" id="menu-bg-color" value="#444444">
+          
+          <label for="menu-item-color">Cor do Item do Menu:</label>
+          <input type="color" id="menu-item-color" value="#ffffff">
+          
+          <label for="menu-hover-color">Cor do Item ao Passar o Mouse:</label>
+          <input type="color" id="menu-hover-color" value="#cccccc">
+          
+          <label for="menu-item-font-size">Tamanho da Fonte do Item:</label>
+          <input type="range" id="menu-item-font-size" min="10" max="30" value="16">
+          <span id="menu-item-font-size-value">16px</span>
+          
+          <label for="menu-item-spacing">Espaçamento entre Itens:</label>
+          <input type="range" id="menu-item-spacing" min="0" max="50" value="20">
+          <span id="menu-item-spacing-value">20px</span>
+          
+          <label for="menu-align">Alinhamento do Menu:</label>
+          <select id="menu-align">
+            <option value="flex-start">Esquerda</option>
+            <option value="center" selected>Centro</option>
+            <option value="flex-end">Direita</option>
+            <option value="space-around">Espaço ao Redor</option>
+            <option value="space-between">Espaço entre</option>
+          </select>
+          
+          <div id="menu-items-list" class="editor-list">
+            </div>
+          
+          <button id="add-menu-item-btn" class="action-button">Adicionar Item do Menu</button>
+        </div>
+      </div>
+      
+      <div id="editor-gallery" class="editor-container" style="display: none;">
+        <div class="editor-section">
+          <h2>Editor de Galeria</h2>
+          <label for="gallery-spacing">Espaçamento entre Imagens:</label>
+          <input type="range" id="gallery-spacing" min="0" max="50" value="10">
+          <span id="gallery-spacing-value">10px</span>
+          
+          <label for="gallery-align">Alinhamento da Galeria:</label>
+          <select id="gallery-align">
+            <option value="flex-start">Esquerda</option>
+            <option value="center" selected>Centro</option>
+            <option value="flex-end">Direita</option>
+          </select>
+          
+          <label for="card-bg-color">Cor de Fundo do Card:</label>
+          <input type="color" id="card-bg-color" value="#ffffff">
+          
+          <label for="card-border-color">Cor da Borda do Card:</label>
+          <input type="color" id="card-border-color" value="#dddddd">
+          
+          <label for="card-border-radius">Raio da Borda do Card (px):</label>
+          <input type="range" id="card-border-radius" min="0" max="50" value="8">
+          <span id="card-border-radius-value">8px</span>
+          
+          <label for="card-width">Largura do Card (px):</label>
+          <input type="range" id="card-width" min="100" max="400" value="200">
+          <span id="card-width-value">200px</span>
+          
+          <label for="card-height">Altura do Card (px):</label>
+          <input type="range" id="card-height" min="100" max="400" value="250">
+          <span id="card-height-value">250px</span>
+          
+          <label for="card-text-bg-color">Cor de Fundo do Texto do Card:</label>
+          <input type="color" id="card-text-bg-color" value="#f0f0f0">
+          
+          <label for="card-text-color">Cor do Texto do Card:</label>
+          <input type="color" id="card-text-color" value="#333333">
+          
+          <label for="card-text-font-size">Tamanho da Fonte do Texto do Card (px):</label>
+          <input type="range" id="card-text-font-size" min="10" max="24" value="14">
+          <span id="card-text-font-size-value">14px</span>
+          
+          <div id="gallery-items-list" class="editor-list">
+            </div>
+          <button id="add-gallery-item-btn" class="action-button">Adicionar Imagem</button>
+        </div>
+      </div>
+      
+      <div id="editor-form" class="editor-container" style="display: none;">
+        <div class="editor-section">
+          <h2>Editor de Formulário</h2>
+          <label for="form-title">Título do Formulário:</label>
+          <input type="text" id="form-title" value="Entre em Contato">
+          
+          <label for="form-description">Descrição do Formulário:</label>
+          <textarea id="form-description">Preencha o formulário abaixo para nos enviar uma mensagem.</textarea>
+          
+          <label for="form-bg-color">Cor de Fundo do Formulário:</label>
+          <input type="color" id="form-bg-color" value="#f9f9f9">
+          
+          <label for="form-text-color">Cor do Texto do Formulário:</label>
+          <input type="color" id="form-text-color" value="#333333">
+          
+          <label for="form-border-color">Cor da Borda do Formulário:</label>
+          <input type="color" id="form-border-color" value="#dddddd">
+          
+          <label for="form-border-radius">Raio da Borda do Formulário (px):</label>
+          <input type="range" id="form-border-radius" min="0" max="30" value="8">
+          <span id="form-border-radius-value">8px</span>
+          
+          <label for="form-button-bg-color">Cor de Fundo do Botão:</label>
+          <input type="color" id="form-button-bg-color" value="#4CAF50">
+          
+          <label for="form-button-text-color">Cor do Texto do Botão:</label>
+          <input type="color" id="form-button-text-color" value="#ffffff">
+          
+          <div id="form-fields-list" class="editor-list">
+            </div>
+          
+          <button id="add-form-field-btn" class="action-button">Adicionar Campo</button>
+        </div>
+      </div>
+
+      <div id="editor-interactive-api" class="editor-container" style="display: none;">
+        <div class="editor-section">
+          <h2>Editor de API Interativa (FIPE)</h2>
+          <p>Consulte dados da Tabela FIPE. Insira o código da marca, modelo e ano (se aplicável).</p>
+
+          <label for="fipe-brand-code">Código da Marca (ex: 21 para VW):</label>
+          <input type="number" id="fipe-brand-code" placeholder="Ex: 21">
+          
+          <label for="fipe-model-code">Código do Modelo (ex: 2465 para GOL 1.0):</label>
+          <input type="number" id="fipe-model-code" placeholder="Ex: 2465">
+
+          <label for="fipe-year-code">Ano do Modelo (ex: 2015-1 para 2015 Gasolina):</label>
+          <input type="text" id="fipe-year-code" placeholder="Ex: 2015-1">
+          
+          <button id="fetch-fipe-data-btn" class="action-button">Consultar FIPE</button>
+          <div id="fipe-result-status" class="status-message"></div>
+        </div>
+      </div>
+
+      <div id="editor-data-apis" class="editor-container" style="display: none;">
+        <div class="editor-section">
+          <h2>Editor de Dados de APIs (Promise.all)</h2>
+          <p>Clique no botão para carregar dados de múltiplas APIs simultaneamente.</p>
+          <button id="fetch-all-apis-btn" class="action-button">Carregar Dados das APIs</button>
+          <div id="all-apis-result-status" class="status-message"></div>
+        </div>
+      </div>
+      
+      <div id="editor-footer" class="editor-container" style="display: none;">
+        <div class="editor-section">
+          <h2>Editor de Rodapé</h2>
+          <label for="footer-text">Texto do Rodapé:</label>
+          <input type="text" id="footer-text" placeholder="Texto do rodapé" value="© 2024 Meu Site. Todos os direitos reservados.">
+          
+          <label for="footer-font-size">Tamanho da Fonte:</label>
+          <input type="range" id="footer-font-size" min="10" max="30" value="14">
+          <span id="footer-font-size-value">14px</span>
+          
+          <label for="footer-text-color">Cor do Texto:</label>
+          <input type="color" id="footer-text-color" value="#ffffff">
+          
+          <label for="footer-bg-color">Cor de Fundo:</label>
+          <input type="color" id="footer-bg-color" value="#333333">
+          
+          <label for="footer-align">Alinhamento:</label>
+          <select id="footer-align">
+            <option value="left">Esquerda</option>
+            <option value="center" selected>Centro</option>
+            <option value="right">Direita</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="editor-export" style="display: none;">
+        <div class="editor-section">
+          <h2>Exportar Site</h2>
+          
+          <div class="button-row">
+            <button id="show-code-btn" class="action-button">Mostrar Código</button>
+            <button id="save-code-btn" class="save-button">Salvar Código</button>
+          </div>
+          
+          <div class="button-row">
+            <button id="load-code-btn" class="load-button">Carregar Salvo</button>
+            <button id="clear-code-btn" class="clear-button">Limpar Salvo</button>
+          </div>
+          
+          <div id="status-message" class="status-message"></div>
+          
+          <div id="code-preview" class="code-preview" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="generated-menu-container">
+    <div id="generated-header" class="generated-header"></div>
+    <div id="generated-menu" class="generated-menu">
+      <div id="menu-list" class="menu-items"></div>
+    </div>
+    <div id="gallery-container" class="gallery-container"></div>
+    <div id="form-container" class="form-container"></div>
+    <div id="interactive-api-container" class="api-container"></div>
+    <div id="data-apis-container" class="api-container"></div>
+    <div id="generated-footer" class="generated-footer">
+      © 2024 Meu Site. Todos os direitos reservados.
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>
